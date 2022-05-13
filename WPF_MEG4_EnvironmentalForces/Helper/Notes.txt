@@ -1,0 +1,199 @@
+﻿
+
+            ForceCalculation fc = new ForceCalculation();
+            fc.VesselName = "Test Vessel";
+            fc.vesselType = VesselType.Tanker;
+            fc.loadingCondition = LoadingCondition.Loaded;
+            fc.bowShape = BowShape.Bulbous;
+
+            fc.DWT = 280000;
+            fc.LBP = 325;
+            fc.AL = 3160;
+            fc.AT = 1130;
+            fc.T = 22.273;
+            fc.Wd = 24.5;
+
+            fc.vw = 34;
+            fc.h = 20;
+
+            fc.vc = 0.514;
+            //fc.s = 6.6819;
+
+            fc.θw = 150;
+            fc.θc = 90;
+
+            //MessageBox.Show((fc.FXw / 1000).ToString("F0") + "\n" +
+            //                (fc.FYw / 1000).ToString("F0") + "\n" +
+            //                (fc.MXYw / 1000).ToString("F0") + "\n" +
+            //                "-----------------------------" + "\n" +
+            //                (fc.FXc / 1000).ToString("F0") + "\n" +
+            //                (fc.FYc / 1000).ToString("F0") + "\n" +
+            //                (fc.MXYc / 1000).ToString("F0") + "\n");
+
+            ObservableCollection<ForceCalculation> lstCalcs = new ObservableCollection<ForceCalculation>();
+            lstCalcs.Add(fc);
+            //dg1.DataContext = this;
+            //dg1.ItemsSource = lstCalcs;
+
+
+            //double c;
+            //c = CoefficientCalculator.GetCoefficient(
+            //    Coefficient.CXYc, 150, VesselType.GasCarrier, out List<double> Xs, out List<double> Ys,
+            //   loadingCondition: LoadingCondition.NA, bowShape: BowShape.NA, tankShape: TankShape.NA,
+            //    Wd: 24.5, T: 22.2727272727
+            //    );
+
+            //double k;
+            //k = CoefficientCalculator.GetK(10, 24.5, 22.2727272727, out List<double> Xs1, out List<double> Ys1);
+
+            //MessageBox.Show(k.ToString());
+
+            //var result = Xs1.Zip(Ys1, (f, s) => f.ToString("N4") + " , " + s.ToString("N4"));
+
+            //foreach (var item in result)
+            //{
+            //    tb1.Text = tb1.Text + "\n" + item.ToString();
+            //}
+
+
+            for (int r = 0; r < 4; r++)
+            {
+                RowDefinition rd = new RowDefinition();
+                grd.RowDefinitions.Add(new RowDefinition());
+                grd.RowDefinitions[r].Height = new GridLength(450);
+
+
+                PlotView pv = new PlotView();
+
+
+                PlotModel myModel = new PlotModel() { Title = "Test" };
+                var valueXAxis = new LinearAxis() { Position = AxisPosition.Bottom, MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "X" };
+                var valueYAxis = new LinearAxis() { Position = AxisPosition.Left, MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Y" };
+                myModel.Axes.Add(valueXAxis);
+                myModel.Axes.Add(valueYAxis);
+
+                CoefficientCalculator.GetCoefficient(Coefficient.CYw, fc.θw, fc.vesselType, out List<double> Xs, out List<double> Ys, fc.loadingCondition, fc.bowShape, fc.tankShape, fc.Wd, fc.T);
+                Xs.ToArray();
+                Ys.ToArray();
+
+                var scatterSeries = new LineSeries { MarkerType = MarkerType.Circle };
+
+                myModel.Axes.Add(new LinearColorAxis { Position = AxisPosition.Left, Minimum = Xs.Min() / 1000.0, Maximum = Xs.Max() / 1000.0, HighColor = OxyColors.Red, LowColor = OxyColors.Blue });
+
+                for (int i = 0; i < Xs.Count(); i++)
+                    scatterSeries.Points.Add(new DataPoint(Xs[i], Ys[i]));
+                myModel.Series.Add(scatterSeries);
+
+                //Create Graph
+                pv.Model = myModel;
+
+                Border bd = new Border();
+                bd.BorderThickness = new Thickness(2);
+                bd.Child = pv;
+                Grid.SetRow(bd, r);
+                grd.Children.Add(bd);
+            }
+
+
+
+
+
+
+
+            //PlotModel myModel = new PlotModel() { Title = "Test" };
+            //var valueXAxis = new LinearAxis() { Position = AxisPosition.Bottom, MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "X" };
+            //var valueYAxis = new LinearAxis() { Position = AxisPosition.Left, MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Y" };
+            //myModel.Axes.Add(valueXAxis);
+            //myModel.Axes.Add(valueYAxis);
+
+            //CoefficientCalculator.GetCoefficient(Coefficient.CYw, fc.θw, fc.vesselType, out List<double> Xs, out List<double> Ys, fc.loadingCondition, fc.bowShape, fc.tankShape, fc.Wd, fc.T);
+            //Xs.ToArray();
+            //Ys.ToArray();
+
+            //var scatterSeries = new LineSeries { MarkerType = MarkerType.Circle };
+
+            //myModel.Axes.Add(new LinearColorAxis { Position = AxisPosition.Left, Minimum = Xs.Min() / 1000.0, Maximum = Xs.Max() / 1000.0, HighColor = OxyColors.Red, LowColor = OxyColors.Blue });
+
+            //for (int i = 0; i < Xs.Count(); i++)
+            //    scatterSeries.Points.Add(new DataPoint(Xs[i], Ys[i]));
+            //myModel.Series.Add(scatterSeries);
+
+            ////Create Graph
+            //Graph.Model = myModel;
+
+
+
+
+        }
+
+
+
+
+        //private void CreateGraphs()
+        //{
+
+
+
+
+
+        //    //Create Scatter Points
+
+        //    var scatterSeries = new ScatterSeries { MarkerType = MarkerType.Circle };
+        //    myModel.Axes.Add(new LinearColorAxis { Position = AxisPosition.Right, Minimum = y.Min(), Maximum = y.Max(), HighColor = OxyColors.Red, LowColor = OxyColors.Blue });
+        //    for (int i = 0; i < x.Count(); i++)
+        //        scatterSeries.Points.Add(new ScatterPoint(x[i], y[i], 4, y[i]));
+        //    myModel.Series.Add(scatterSeries);
+
+
+
+
+
+
+
+
+
+
+        //    //Create Trend Line
+        //    int order = 1;
+        //    if (x.Length > order)
+        //    {
+        //        double[] p = MNet.Fit.Polynomial(x, y, order);
+        //        myModel.Series.Add(new FunctionSeries(z => Polynomial.Evaluate(z, p), x.Min(), x.Max(), 3, "Test")
+        //        {
+        //            Title = "Trend Line: y = " + p[0].ToString("F6") + "x + " + p[1].ToString("F6"),
+        //            Color = OxyColors.Green
+        //        });
+        //    }
+
+
+
+        //    double[] x1 = new double[] { 10000, 200000, };
+        //    double[] y1 = new double[] { 0, 0, };
+        //    var lineSeries = new LineSeries { Color = OxyColors.Blue, Title = "AER Trajectory value" };
+        //    List<DataPoint> dPoints = new List<DataPoint>();
+        //    dPoints.Add(new DataPoint(50000, 0));
+        //    dPoints.Add(new DataPoint(211000, 0));
+
+        //    var lineSeries1 = new LineSeries { Color = OxyColors.Blue, Title = "" };
+        //    lineSeries1.Points.AddRange(dPoints);
+        //    myModel.Series.Add(lineSeries1);
+
+
+
+
+
+        //    //Create Graph
+        //    Graph.Model = myModel;
+
+
+        //    //Export graph to Clipboard
+        //    var pngExporter = new ox.PngExporter
+        //    {
+        //        Width = 1024,
+        //        Height = 768,
+        //        Background = OxyColors.White
+        //    };
+        //    var bitmap = pngExporter.ExportToBitmap(myModel);
+        //    Clipboard.SetImage(bitmap);
+
+        //}
